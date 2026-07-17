@@ -1,4 +1,4 @@
-"""Deterministic, realistic agent trace used by ``traceforge demo``."""
+"""供 ``traceforge demo`` 使用的确定性真实感 Agent 轨迹。"""
 
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ def _span(
 
 
 def demo_payload() -> dict[str, Any]:
-    """Return a synthetic OTLP/HTTP JSON export with one agent trace."""
+    """返回包含一条 Agent 轨迹的合成 OTLP/HTTP JSON 导出。"""
 
     spans = [
         _span(
@@ -65,7 +65,7 @@ def demo_payload() -> dict[str, Any]:
         _span(
             "0000000000000002",
             "0000000000000001",
-            "plan itinerary",
+            "规划行程",
             100,
             800,
             [
@@ -89,10 +89,10 @@ def demo_payload() -> dict[str, Any]:
                 ("gen_ai.tool.call.id", "call_weather_1"),
                 ("gen_ai.request.retry_number", 0),
                 ("error.type", "upstream_timeout"),
-                ("error.message", "Weather provider exceeded the 250 ms deadline"),
+                ("error.message", "天气服务超过 250 ms 截止时间"),
             ],
             status="STATUS_CODE_ERROR",
-            status_message="upstream timeout",
+            status_message="上游超时",
             events=[
                 {
                     "name": "exception",
@@ -101,7 +101,7 @@ def demo_payload() -> dict[str, Any]:
                         _attribute("exception.type", "TimeoutError"),
                         _attribute(
                             "exception.message",
-                            "Weather provider exceeded the 250 ms deadline",
+                            "天气服务超过 250 ms 截止时间",
                         ),
                     ],
                 }
@@ -137,7 +137,7 @@ def demo_payload() -> dict[str, Any]:
         _span(
             "0000000000000006",
             "0000000000000001",
-            "compose answer",
+            "生成答复",
             2000,
             2650,
             [

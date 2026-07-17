@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
   <title id="title">TraceForge</title>
-  <desc id="desc">A dark technical banner showing a glowing OpenTelemetry trace becoming actionable signals.</desc>
+  <desc id="desc">深色技术横幅：发光的 OpenTelemetry 轨迹被转化为可执行洞察。</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#080b12"/>
@@ -44,17 +44,17 @@
     <circle cx="974" cy="210" r="8" fill="#6fffc1"/>
   </g>
   <g fill="#94a3bd" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" letter-spacing="1">
-    <text x="839" y="82">MODEL · 700 ms</text>
-    <text x="831" y="276">TOOL · RETRY ×2</text>
-    <text x="978" y="131">TOKENS</text>
-    <text x="985" y="237">COST</text>
+    <text x="839" y="82">模型 · 700 ms</text>
+    <text x="831" y="276">工具 · 重试 ×2</text>
+    <text x="978" y="131">令牌</text>
+    <text x="985" y="237">成本</text>
   </g>
   <g transform="translate(68 72)">
     <rect width="54" height="54" rx="14" fill="#101e2c" stroke="#36506a"/>
     <path d="M13 29H22L27 18L33 37L39 25H44" fill="none" stroke="url(#trace)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
   <text x="68" y="190" fill="url(#word)" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="76" font-weight="760" letter-spacing="-4">TraceForge</text>
-  <text x="72" y="228" fill="#94a3bd" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15" letter-spacing="3">AGENT TRACE INTELLIGENCE</text>
-  <text x="72" y="284" fill="#c7d3e8" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="17">Latency · critical path · tools · retries · tokens · cost</text>
+  <text x="72" y="228" fill="#94a3bd" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15" letter-spacing="3">智能体轨迹洞察</text>
+  <text x="72" y="284" fill="#c7d3e8" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="17">延迟 · 关键路径 · 工具 · 重试 · 令牌 · 成本</text>
   <rect x=".75" y=".75" width="1198.5" height="358.5" rx="27.25" fill="none" stroke="#31405a" stroke-width="1.5"/>
 </svg>

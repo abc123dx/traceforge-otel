@@ -22,5 +22,5 @@ def test_exact_prefix_and_wildcard_resolution() -> None:
 
 
 def test_rejects_negative_rates() -> None:
-    with pytest.raises(CostModelError, match="cannot be negative"):
+    with pytest.raises(CostModelError, match="不能为负数"):
         CostModel.from_dict({"models": {"bad": {"input_per_1m": -1, "output_per_1m": 2}}})

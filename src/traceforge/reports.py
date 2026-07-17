@@ -1,4 +1,4 @@
-"""Rich terminal, JSON, and self-contained HTML report rendering."""
+"""渲染 Rich 终端、JSON 与自包含 HTML 报告。"""
 
 from __future__ import annotations
 
@@ -21,15 +21,15 @@ def _format_cost(value: float) -> str:
 
 def _cost_label(result: AnalysisResult) -> str:
     if result.cost_model_name is None:
-        return "not configured"
+        return "未配置"
     return _format_cost(result.cost_usd)
 
 
 def render_terminal(result: AnalysisResult, console: Console) -> None:
-    """Render an analysis result as compact Rich tables."""
+    """以紧凑的 Rich 表格渲染分析结果。"""
 
     title = Text("TraceForge", style="bold cyan")
-    title.append("  agent trace intelligence", style="dim")
+    title.append("  Agent 轨迹智能分析", style="dim")
     console.print(Panel(title, border_style="cyan", padding=(0, 1)))
 
     metrics = Table(show_header=False, box=None, pad_edge=False)
@@ -37,35 +37,35 @@ def render_terminal(result: AnalysisResult, console: Console) -> None:
     metrics.add_column(style="bold")
     metrics.add_column(style="dim")
     metrics.add_column(style="bold")
-    metrics.add_row("Traces", str(len(result.traces)), "Spans", str(result.span_count))
+    metrics.add_row("轨迹", str(len(result.traces)), "Span 数", str(result.span_count))
     metrics.add_row(
-        "Tool calls",
+        "工具调用",
         str(result.tool_calls),
-        "Tool errors",
+        "工具错误",
         str(result.tool_error_count),
     )
     metrics.add_row(
-        "Tokens",
-        f"{result.input_tokens:,} in / {result.output_tokens:,} out",
-        "Estimated cost",
+        "Token",
+        f"{result.input_tokens:,} 输入 / {result.output_tokens:,} 输出",
+        "估算成本",
         _cost_label(result),
     )
     metrics.add_row(
-        "Retry loops",
+        "重试循环",
         str(result.retry_loop_count),
-        "Source",
+        "来源",
         rich_escape(result.source),
     )
     console.print(metrics)
 
-    traces = Table(title="Trace overview", header_style="bold cyan")
-    traces.add_column("Trace", no_wrap=True)
-    traces.add_column("Latency", justify="right")
-    traces.add_column("Critical path", justify="right")
-    traces.add_column("Tools", justify="right")
-    traces.add_column("Errors", justify="right")
-    traces.add_column("Tokens", justify="right")
-    traces.add_column("Cost", justify="right")
+    traces = Table(title="轨迹概览", header_style="bold cyan")
+    traces.add_column("轨迹", no_wrap=True)
+    traces.add_column("延迟", justify="right")
+    traces.add_column("关键路径", justify="right")
+    traces.add_column("工具", justify="right")
+    traces.add_column("错误", justify="right")
+    traces.add_column("Token", justify="right")
+    traces.add_column("成本", justify="right")
     for trace in result.traces:
         cost = _format_cost(trace.cost_usd) if result.cost_model_name else "—"
         traces.add_row(
@@ -80,9 +80,9 @@ def render_terminal(result: AnalysisResult, console: Console) -> None:
     console.print(traces)
 
     for trace in result.traces:
-        path = " → ".join(rich_escape(name) for name in trace.critical_path.span_names) or "n/a"
+        path = " → ".join(rich_escape(name) for name in trace.critical_path.span_names) or "无"
         trace_label = rich_escape(trace.trace_id[:12])
-        console.print(f"[bold]Critical path[/bold] [dim]{trace_label}…[/dim]  {path}")
+        console.print(f"[bold]关键路径[/bold] [dim]{trace_label}…[/dim]  {path}")
         for error in trace.tool_errors:
             message = f": {error.message}" if error.message else ""
             console.print(
@@ -91,15 +91,15 @@ def render_terminal(result: AnalysisResult, console: Console) -> None:
                 f"{rich_escape(message)}[/dim]"
             )
         for loop in trace.retry_loops:
-            state = "recovered" if loop.recovered else "failed"
+            state = "已恢复" if loop.recovered else "失败"
             console.print(
-                f"  [yellow]↻ {rich_escape(loop.signature)}[/yellow] {loop.attempts} attempts, "
-                f"{loop.wasted_ms:.1f} ms before final attempt [dim]({state})[/dim]"
+                f"  [yellow]↻ {rich_escape(loop.signature)}[/yellow] 共 {loop.attempts} 次尝试，"
+                f"最终尝试前耗时 {loop.wasted_ms:.1f} ms [dim]({state})[/dim]"
             )
 
 
 def render_json(result: AnalysisResult, *, pretty: bool = True) -> str:
-    """Serialize an analysis result to stable JSON."""
+    """将分析结果序列化为稳定 JSON。"""
 
     return json.dumps(
         result.to_dict(),
@@ -118,36 +118,34 @@ def _trace_sections(result: AnalysisResult) -> str:
             f"<td>{usage.calls}</td>"
             f"<td>{usage.input_tokens:,}</td>"
             f"<td>{usage.output_tokens:,}</td>"
-            f"<td>{_format_cost(usage.cost_usd) if usage.priced else 'unpriced'}</td>"
+            f"<td>{_format_cost(usage.cost_usd) if usage.priced else '未定价'}</td>"
             "</tr>"
             for usage in trace.model_usage
         )
         if not model_rows:
-            model_rows = (
-                '<tr><td colspan="5" class="empty">No model usage attributes found.</td></tr>'
-            )
+            model_rows = '<tr><td colspan="5" class="empty">未发现模型用量属性。</td></tr>'
         error_rows = "".join(
             "<tr>"
             f"<td>{html_escape(error.tool_name)}</td>"
             f"<td><code>{html_escape(error.error_type)}</code></td>"
-            f"<td>{html_escape(error.message or 'No message')}</td>"
+            f"<td>{html_escape(error.message or '无错误消息')}</td>"
             f"<td>{error.duration_ms:.1f} ms</td>"
             "</tr>"
             for error in trace.tool_errors
         )
         if not error_rows:
-            error_rows = '<tr><td colspan="4" class="ok">No failed tool calls.</td></tr>'
+            error_rows = '<tr><td colspan="4" class="ok">没有失败的工具调用。</td></tr>'
         retry_rows = "".join(
             "<tr>"
             f"<td><code>{html_escape(loop.signature)}</code></td>"
             f"<td>{loop.attempts}</td>"
             f"<td>{loop.wasted_ms:.1f} ms</td>"
-            f"<td>{'Recovered' if loop.recovered else 'Failed'}</td>"
+            f"<td>{'已恢复' if loop.recovered else '失败'}</td>"
             "</tr>"
             for loop in trace.retry_loops
         )
         if not retry_rows:
-            retry_rows = '<tr><td colspan="4" class="ok">No retry loops inferred.</td></tr>'
+            retry_rows = '<tr><td colspan="4" class="ok">未推断出重试循环。</td></tr>'
         path = "".join(
             f'<span class="path-node">{index + 1}. {html_escape(name)}</span>'
             for index, name in enumerate(trace.critical_path.span_names)
@@ -157,27 +155,27 @@ def _trace_sections(result: AnalysisResult) -> str:
             <section class="trace">
               <div class="trace-head">
                 <div>
-                  <p class="eyebrow">TRACE</p>
+                  <p class="eyebrow">轨迹</p>
                   <h2>{html_escape(trace.trace_id)}</h2>
                 </div>
-                <div class="latency">{trace.duration_ms:,.1f}<small> ms total</small></div>
+                <div class="latency">{trace.duration_ms:,.1f}<small> ms 总计</small></div>
               </div>
               <div class="path">
-                <div><strong>Critical path</strong>
-                  <span class="muted">{trace.critical_path.duration_ms:,.1f} ms causal work</span>
+                <div><strong>关键路径</strong>
+                  <span class="muted">{trace.critical_path.duration_ms:,.1f} ms 因果工作</span>
                 </div>
-                <div class="path-flow">{path or '<span class="muted">Unavailable</span>'}</div>
+                <div class="path-flow">{path or '<span class="muted">不可用</span>'}</div>
               </div>
-              <h3>Model usage</h3>
-              <table><thead><tr><th>Model</th><th>Calls</th><th>Input</th>
-                <th>Output</th><th>Estimated cost</th></tr></thead>
+              <h3>模型用量</h3>
+              <table><thead><tr><th>模型</th><th>调用</th><th>输入</th>
+                <th>输出</th><th>估算成本</th></tr></thead>
                 <tbody>{model_rows}</tbody></table>
-              <h3>Tool failures</h3>
-              <table><thead><tr><th>Tool</th><th>Error</th><th>Message</th>
-                <th>Latency</th></tr></thead><tbody>{error_rows}</tbody></table>
-              <h3>Retry loops</h3>
-              <table><thead><tr><th>Signature</th><th>Attempts</th><th>Wasted</th>
-                <th>Outcome</th></tr></thead><tbody>{retry_rows}</tbody></table>
+              <h3>工具失败</h3>
+              <table><thead><tr><th>工具</th><th>错误</th><th>消息</th>
+                <th>延迟</th></tr></thead><tbody>{error_rows}</tbody></table>
+              <h3>重试循环</h3>
+              <table><thead><tr><th>特征</th><th>尝试次数</th><th>无效耗时</th>
+                <th>结果</th></tr></thead><tbody>{retry_rows}</tbody></table>
             </section>
             """
         )
@@ -185,16 +183,16 @@ def _trace_sections(result: AnalysisResult) -> str:
 
 
 def render_html(result: AnalysisResult) -> str:
-    """Render a zero-dependency, self-contained HTML report."""
+    """渲染零依赖、自包含的 HTML 报告。"""
 
     priced_cost = _cost_label(result)
     return f"""<!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="generator" content="TraceForge">
-  <title>TraceForge report</title>
+  <title>TraceForge 分析报告</title>
   <style>
     :root {{
       color-scheme: dark;
@@ -252,24 +250,24 @@ def render_html(result: AnalysisResult) -> str:
 <body>
 <main>
   <header>
-    <div><p class="eyebrow">LOCAL-FIRST AGENT OBSERVABILITY</p>
+    <div><p class="eyebrow">本地优先的 AGENT 可观测性</p>
       <h1>Trace<span>Forge</span></h1>
-      <p class="muted">OpenTelemetry performance, reliability &amp; cost intelligence.</p>
+      <p class="muted">OpenTelemetry 性能、可靠性与成本智能分析。</p>
     </div>
-    <div class="stamp">Generated {html_escape(result.generated_at)}<br>
+    <div class="stamp">生成时间：{html_escape(result.generated_at)}<br>
       {html_escape(result.source)}</div>
   </header>
   <div class="cards">
-    <div class="card"><span>Traces</span><b>{len(result.traces)}</b></div>
-    <div class="card"><span>Spans</span><b>{result.span_count}</b></div>
-    <div class="card"><span>Total tokens</span>
+    <div class="card"><span>轨迹</span><b>{len(result.traces)}</b></div>
+    <div class="card"><span>Span 数</span><b>{result.span_count}</b></div>
+    <div class="card"><span>Token 总量</span>
       <b>{result.input_tokens + result.output_tokens:,}</b></div>
-    <div class="card"><span>Tool calls</span><b>{result.tool_calls}</b></div>
-    <div class="card"><span>Tool errors</span><b>{result.tool_error_count}</b></div>
-    <div class="card"><span>Estimated cost</span><b>{html_escape(priced_cost)}</b></div>
+    <div class="card"><span>工具调用</span><b>{result.tool_calls}</b></div>
+    <div class="card"><span>工具错误</span><b>{result.tool_error_count}</b></div>
+    <div class="card"><span>估算成本</span><b>{html_escape(priced_cost)}</b></div>
   </div>
   {_trace_sections(result)}
-  <footer>Generated locally by TraceForge. Inputs and report data never leave this machine.</footer>
+  <footer>由 TraceForge 在本地生成；输入和报告数据始终留在本机。</footer>
 </main>
 </body>
 </html>

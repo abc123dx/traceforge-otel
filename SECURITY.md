@@ -1,28 +1,26 @@
-# Security policy
+# 安全策略
 
-## Supported versions
+## 支持的版本
 
-TraceForge is pre-1.0. Security fixes are applied to the latest release on the default branch.
+TraceForge 尚未达到 1.0。安全修复仅应用于默认分支上的最新版本。
 
-## Reporting a vulnerability
+## 报告漏洞
 
-Please do not open a public issue for a suspected vulnerability. Use GitHub's **Private
-vulnerability reporting** feature on the repository Security tab. Include:
+如果怀疑存在漏洞，请勿创建公开 issue。请使用仓库 Security 页面中的
+**Private vulnerability reporting** 功能，并提供：
 
-- the affected TraceForge version or commit;
-- a minimal trace file with sensitive values removed;
-- reproduction steps and expected impact;
-- any suggested mitigation.
+- 受影响的 TraceForge 版本或 commit；
+- 已删除敏感值的最小轨迹文件；
+- 复现步骤与预期影响；
+- 可选的缓解建议。
 
-You can expect an acknowledgement within seven days. Please allow time for a fix and coordinated
-disclosure before publishing details.
+通常会在七天内确认收到报告。修复与协调披露完成前，请预留处理时间并暂缓公开细节。
 
-## Data handling
+## 数据处理
 
-TraceForge reads local files and does not contain network clients, analytics, or an update checker.
-It writes files only when a command is given an output path. HTML reports contain analyzed trace
-metadata, so inspect and redact them before sharing outside your organization.
+TraceForge 读取本地文件，不包含网络客户端、分析上报或更新检查器。只有在命令收到输出
+路径时才会写入文件。HTML 报告包含已分析的轨迹元数据，因此在组织外分享前应先检查并
+脱敏。
 
-Treat trace files as potentially sensitive: GenAI instrumentation can include prompts, responses,
-tool arguments, account identifiers, and exception messages. TraceForge does not currently redact
-arbitrary attributes on your behalf.
+请把轨迹文件视为潜在敏感数据：GenAI instrumentation 可能包含 prompt、回复、工具参数、
+账号标识符和异常消息。TraceForge 当前不会代替用户对任意 attributes 进行脱敏。

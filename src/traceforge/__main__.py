@@ -1,4 +1,4 @@
-"""Run TraceForge with ``python -m traceforge``."""
+"""通过 ``python -m traceforge`` 运行 TraceForge。"""
 
 from traceforge.cli import app
 

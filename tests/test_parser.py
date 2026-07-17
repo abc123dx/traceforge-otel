@@ -54,7 +54,7 @@ def test_auto_detects_jsonl_extension(tmp_path: Path) -> None:
 
 
 def test_rejects_missing_identifiers() -> None:
-    with pytest.raises(TraceParseError, match="traceId and spanId"):
+    with pytest.raises(TraceParseError, match="traceId 和 spanId"):
         parse_payload(
             {
                 "name": "broken",

@@ -1,4 +1,4 @@
-"""OTLP JSON and JSONL span parsing."""
+"""解析 OTLP JSON 与 JSONL span。"""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from traceforge.models import Span, SpanEvent
 
 
 class TraceParseError(ValueError):
-    """Raised when trace input cannot be normalized."""
+    """轨迹输入无法规范化时抛出。"""
 
 
 def _first(mapping: Mapping[str, Any], *keys: str, default: Any = None) -> Any:
@@ -70,12 +70,12 @@ def _parse_attributes(raw: Any) -> dict[str, Any]:
                 continue
             result[str(item["key"])] = _decode_value(item.get("value"))
         return result
-    raise TraceParseError("Span attributes must be an object or OTLP key/value array.")
+    raise TraceParseError("span attributes 必须是对象或 OTLP 键值数组。")
 
 
 def _timestamp_ns(value: Any, field: str) -> int:
     if isinstance(value, bool):
-        raise TraceParseError(f"{field} must be a timestamp, not a boolean.")
+        raise TraceParseError(f"{field} 必须是时间戳，不能是布尔值。")
     if isinstance(value, (int, float)):
         return int(value)
     if isinstance(value, str):
@@ -86,8 +86,8 @@ def _timestamp_ns(value: Any, field: str) -> int:
                 normalized = value.replace("Z", "+00:00")
                 return int(datetime.fromisoformat(normalized).timestamp() * 1_000_000_000)
             except ValueError as exc:
-                raise TraceParseError(f"Invalid {field}: {value!r}.") from exc
-    raise TraceParseError(f"Missing or invalid {field}.")
+                raise TraceParseError(f"{field} 无效：{value!r}。") from exc
+    raise TraceParseError(f"{field} 缺失或无效。")
 
 
 def _status(raw: Any) -> tuple[str, str]:
@@ -125,7 +125,7 @@ def _parse_events(raw: Any) -> tuple[SpanEvent, ...]:
         events.append(
             SpanEvent(
                 name=str(item.get("name", "event")),
-                time_ns=_timestamp_ns(time_value, "event timestamp") if time_value else 0,
+                time_ns=_timestamp_ns(time_value, "事件时间戳") if time_value else 0,
                 attributes=_parse_attributes(item.get("attributes")),
             )
         )
@@ -144,11 +144,11 @@ def _iter_raw_spans(payload: Any) -> Iterator[tuple[dict[str, Any], dict[str, An
     if isinstance(payload, list):
         for item in payload:
             if not isinstance(item, dict):
-                raise TraceParseError("Every span in a JSON array must be an object.")
+                raise TraceParseError("JSON 数组中的每个 span 都必须是对象。")
             yield item, _resource_attributes(item.get("resource"))
         return
     if not isinstance(payload, dict):
-        raise TraceParseError("Trace input must be a JSON object or array.")
+        raise TraceParseError("轨迹输入必须是 JSON 对象或数组。")
 
     resource_spans = _first(payload, "resourceSpans", "resource_spans")
     if isinstance(resource_spans, list):
@@ -186,7 +186,7 @@ def _parse_span(raw: dict[str, Any], resource: dict[str, Any]) -> Span:
     trace_id = str(_first(raw, "traceId", "trace_id", default="")).strip()
     span_id = str(_first(raw, "spanId", "span_id", default="")).strip()
     if not trace_id or not span_id:
-        raise TraceParseError("Every span needs a non-empty traceId and spanId.")
+        raise TraceParseError("每个 span 都必须包含非空的 traceId 和 spanId。")
 
     start_raw = _first(
         raw,
@@ -204,13 +204,13 @@ def _parse_span(raw: dict[str, Any], resource: dict[str, Any]) -> Span:
         "endTime",
         "end_time",
     )
-    start_ns = _timestamp_ns(start_raw, "span start time")
+    start_ns = _timestamp_ns(start_raw, "span 开始时间")
     if end_raw is None and "duration_ms" in raw:
         end_ns = start_ns + int(float(raw["duration_ms"]) * 1_000_000)
     else:
-        end_ns = _timestamp_ns(end_raw, "span end time")
+        end_ns = _timestamp_ns(end_raw, "span 结束时间")
     if end_ns < start_ns:
-        raise TraceParseError(f"Span {span_id} ends before it starts.")
+        raise TraceParseError(f"span {span_id} 的结束时间早于开始时间。")
 
     status_code, status_message = _status(raw.get("status"))
     if "status_code" in raw:
@@ -236,16 +236,16 @@ def _parse_span(raw: dict[str, Any], resource: dict[str, Any]) -> Span:
 
 
 def parse_payload(payload: Any) -> list[Span]:
-    """Normalize a decoded OTLP JSON payload or a list of flat spans."""
+    """规范化已解码的 OTLP JSON 载荷或扁平 span 列表。"""
 
     spans = [_parse_span(raw, resource) for raw, resource in _iter_raw_spans(payload)]
     if not spans:
-        raise TraceParseError("No spans were found in the input.")
+        raise TraceParseError("输入中未找到 span。")
     return spans
 
 
 def parse_jsonl(text: str) -> list[Span]:
-    """Normalize one flat or OTLP-wrapped span object per JSONL line."""
+    """规范化 JSONL 中每行一个的扁平或 OTLP 包装 span 对象。"""
 
     spans: list[Span] = []
     for line_number, line in enumerate(text.splitlines(), start=1):
@@ -254,27 +254,27 @@ def parse_jsonl(text: str) -> list[Span]:
         try:
             payload = json.loads(line)
         except json.JSONDecodeError as exc:
-            raise TraceParseError(f"Invalid JSON on line {line_number}: {exc.msg}.") from exc
+            raise TraceParseError(f"第 {line_number} 行 JSON 无效：{exc.msg}。") from exc
         try:
             spans.extend(parse_payload(payload))
         except TraceParseError as exc:
-            raise TraceParseError(f"Line {line_number}: {exc}") from exc
+            raise TraceParseError(f"第 {line_number} 行：{exc}") from exc
     if not spans:
-        raise TraceParseError("No spans were found in the JSONL input.")
+        raise TraceParseError("JSONL 输入中未找到 span。")
     return spans
 
 
 def load_spans(path: Path, input_format: str = "auto") -> list[Span]:
-    """Load spans from OTLP JSON or JSONL using explicit or inferred format."""
+    """按显式或推断格式从 OTLP JSON 或 JSONL 加载 span。"""
 
     try:
         text = path.read_text(encoding="utf-8")
     except OSError as exc:
-        raise TraceParseError(f"Could not read {path}: {exc}") from exc
+        raise TraceParseError(f"无法读取 {path}：{exc}") from exc
 
     normalized_format = input_format.lower()
     if normalized_format not in {"auto", "otlp", "json", "jsonl"}:
-        raise TraceParseError("Input format must be auto, otlp, json, or jsonl.")
+        raise TraceParseError("输入格式必须是 auto、otlp、json 或 jsonl。")
     if normalized_format == "jsonl" or (
         normalized_format == "auto" and path.suffix.lower() in {".jsonl", ".ndjson"}
     ):
@@ -284,4 +284,4 @@ def load_spans(path: Path, input_format: str = "auto") -> list[Span]:
     except json.JSONDecodeError as exc:
         if normalized_format == "auto":
             return parse_jsonl(text)
-        raise TraceParseError(f"Invalid JSON: {exc.msg}.") from exc
+        raise TraceParseError(f"JSON 无效：{exc.msg}。") from exc

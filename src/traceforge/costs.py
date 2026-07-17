@@ -1,4 +1,4 @@
-"""Configurable token-cost estimation."""
+"""可配置的 Token 成本估算。"""
 
 from __future__ import annotations
 
@@ -9,12 +9,12 @@ from typing import Any
 
 
 class CostModelError(ValueError):
-    """Raised when a cost-model document is invalid."""
+    """成本模型文档无效时抛出。"""
 
 
 @dataclass(frozen=True, slots=True)
 class PriceRate:
-    """USD rates per one million input and output tokens."""
+    """每百万输入与输出 Token 的美元费率。"""
 
     input_per_1m: float
     output_per_1m: float
@@ -22,7 +22,7 @@ class PriceRate:
 
 @dataclass(frozen=True, slots=True)
 class CostModel:
-    """A model-name-to-price mapping with exact, prefix, and wildcard lookup."""
+    """支持精确、前缀与通配符匹配的模型价格映射。"""
 
     name: str
     rates: dict[str, PriceRate]
@@ -32,9 +32,9 @@ class CostModel:
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
-            raise CostModelError(f"Could not read cost model {path}: {exc}") from exc
+            raise CostModelError(f"无法读取成本模型 {path}：{exc}") from exc
         if not isinstance(payload, dict):
-            raise CostModelError("Cost model must be a JSON object.")
+            raise CostModelError("成本模型必须是 JSON 对象。")
         return cls.from_dict(payload, fallback_name=path.stem)
 
     @classmethod
@@ -46,7 +46,7 @@ class CostModel:
     ) -> CostModel:
         raw_models = payload.get("models", payload)
         if not isinstance(raw_models, dict):
-            raise CostModelError("'models' must be a JSON object.")
+            raise CostModelError("'models' 必须是 JSON 对象。")
         name_value = payload.get("name", fallback_name)
         name = str(name_value)
         rates: dict[str, PriceRate] = {}
@@ -54,24 +54,24 @@ class CostModel:
             if model in {"name", "currency"} and "models" not in payload:
                 continue
             if not isinstance(model, str) or not isinstance(raw_rate, dict):
-                raise CostModelError(f"Rate for {model!r} must be an object.")
+                raise CostModelError(f"模型 {model!r} 的费率必须是对象。")
             try:
                 input_rate = float(raw_rate["input_per_1m"])
                 output_rate = float(raw_rate["output_per_1m"])
             except (KeyError, TypeError, ValueError) as exc:
                 raise CostModelError(
-                    f"Rate for {model!r} needs numeric input_per_1m and output_per_1m."
+                    f"模型 {model!r} 的费率需要数字类型的 input_per_1m 和 output_per_1m。"
                 ) from exc
             if input_rate < 0 or output_rate < 0:
-                raise CostModelError(f"Rates for {model!r} cannot be negative.")
+                raise CostModelError(f"模型 {model!r} 的费率不能为负数。")
             rates[model] = PriceRate(input_rate, output_rate)
         if not rates:
-            raise CostModelError("Cost model contains no rates.")
+            raise CostModelError("成本模型中没有费率。")
         return cls(name=name, rates=rates)
 
     @classmethod
     def demo(cls) -> CostModel:
-        """Pricing used only for the synthetic demo model."""
+        """仅供合成演示模型使用的价格。"""
 
         return cls(
             name="demo-rates",

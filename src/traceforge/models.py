@@ -1,4 +1,4 @@
-"""Typed domain models used by parsers, analyzers, and renderers."""
+"""解析、分析与渲染共用的强类型领域模型。"""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ JsonValue = None | bool | int | float | str | list["JsonValue"] | dict[str, "Jso
 
 @dataclass(frozen=True, slots=True)
 class SpanEvent:
-    """An OpenTelemetry span event."""
+    """OpenTelemetry span 事件。"""
 
     name: str
     time_ns: int
@@ -26,7 +26,7 @@ class SpanEvent:
 
 @dataclass(frozen=True, slots=True)
 class Span:
-    """A normalized span independent of its OTLP JSON representation."""
+    """与 OTLP JSON 表示无关的规范化 span。"""
 
     trace_id: str
     span_id: str
@@ -73,7 +73,7 @@ class Span:
 
 @dataclass(frozen=True, slots=True)
 class CriticalPath:
-    """The highest-cost causal path through a trace."""
+    """一条轨迹中成本最高的因果路径。"""
 
     span_ids: tuple[str, ...]
     span_names: tuple[str, ...]
@@ -89,7 +89,7 @@ class CriticalPath:
 
 @dataclass(frozen=True, slots=True)
 class ToolError:
-    """A failed tool invocation."""
+    """一次失败的工具调用。"""
 
     span_id: str
     tool_name: str
@@ -109,7 +109,7 @@ class ToolError:
 
 @dataclass(frozen=True, slots=True)
 class RetryLoop:
-    """A likely retry sequence inferred from sibling spans."""
+    """从同级 span 推断出的潜在重试序列。"""
 
     signature: str
     attempts: int
@@ -129,7 +129,7 @@ class RetryLoop:
 
 @dataclass(frozen=True, slots=True)
 class ModelUsage:
-    """Token and cost totals for one model."""
+    """单个模型的 Token 与成本汇总。"""
 
     model: str
     calls: int
@@ -152,7 +152,7 @@ class ModelUsage:
 
 @dataclass(frozen=True, slots=True)
 class TraceSummary:
-    """Analysis for one OpenTelemetry trace."""
+    """单条 OpenTelemetry 轨迹的分析结果。"""
 
     trace_id: str
     span_count: int
@@ -185,7 +185,7 @@ class TraceSummary:
 
 @dataclass(frozen=True, slots=True)
 class AnalysisResult:
-    """Top-level analysis result suitable for JSON serialization."""
+    """适合序列化为 JSON 的顶层分析结果。"""
 
     source: str
     generated_at: str

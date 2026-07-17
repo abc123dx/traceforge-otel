@@ -1,4 +1,4 @@
-"""Trace analysis for latency, critical path, tools, retries, tokens, and cost."""
+"""分析轨迹中的延迟、关键路径、工具调用、重试、Token 与成本。"""
 
 from __future__ import annotations
 
@@ -315,10 +315,10 @@ def analyze_spans(
     cost_model: CostModel | None = None,
     generated_at: str | None = None,
 ) -> AnalysisResult:
-    """Analyze normalized spans, grouped by trace ID."""
+    """按 trace ID 分组并分析规范化 span。"""
 
     if not spans:
-        raise ValueError("At least one span is required.")
+        raise ValueError("至少需要一个 span。")
     grouped: dict[str, list[Span]] = defaultdict(list)
     for span in spans:
         grouped[span.trace_id].append(span)

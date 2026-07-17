@@ -17,7 +17,22 @@ def test_demo_command_shows_findings() -> None:
     assert result.exit_code == 0
     assert "TraceForge" in result.stdout
     assert "get_weather" in result.stdout
-    assert "2 attempts" in result.stdout
+    assert "共 2 次尝试" in result.stdout
+
+
+def test_help_is_chinese_and_keeps_public_commands_and_flags() -> None:
+    result = runner.invoke(app, ["analyze", "--help"])
+    missing = runner.invoke(app, ["analyze"])
+
+    assert result.exit_code == 0
+    assert missing.exit_code == 2
+    assert "用法：" in result.stdout
+    assert "分析轨迹并输出 Rich 终端摘要" in result.stdout
+    assert "显示此帮助信息并退出" in result.stdout
+    assert "缺少参数" in missing.stderr
+    assert "--format" in result.stdout
+    assert "--cost-model" in result.stdout
+    assert "--output" in result.stdout
 
 
 def test_analyze_and_report_commands_write_artifacts(tmp_path: Path) -> None:
