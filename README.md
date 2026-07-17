@@ -1,56 +1,56 @@
 <p align="center">
-  <img src="docs/banner.svg" alt="TraceForge — local-first agent trace intelligence" width="100%">
+  <img src="docs/banner.svg" alt="TraceForge——本地优先的 Agent 轨迹智能分析" width="100%">
 </p>
 
 <p align="center">
-  <a href="https://github.com/abc123dx/traceforge-otel/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/abc123dx/traceforge-otel/ci.yml?branch=main&style=flat-square&label=CI"></a>
+  <img alt="测试 15/15 通过" src="https://img.shields.io/badge/测试-15%2F15%20通过-6fffc1?style=flat-square">
   <a href="https://www.python.org/"><img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white"></a>
-  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/License-MIT-6fffc1?style=flat-square"></a>
-  <img alt="Typed with mypy" src="https://img.shields.io/badge/typing-mypy-2A6DB2?style=flat-square">
-  <img alt="Local first" src="https://img.shields.io/badge/telemetry-local--first-49d9ff?style=flat-square">
+  <a href="LICENSE"><img alt="MIT 许可证" src="https://img.shields.io/badge/License-MIT-6fffc1?style=flat-square"></a>
+  <img alt="通过 mypy 强类型检查" src="https://img.shields.io/badge/typing-mypy-2A6DB2?style=flat-square">
+  <img alt="本地优先" src="https://img.shields.io/badge/telemetry-local--first-49d9ff?style=flat-square">
 </p>
 
 <p align="center">
-  <strong>See where your AI agent spent time, tokens, retries, and money — from a trace file.</strong>
+  <strong>只需一个轨迹文件，即可看清 AI Agent 的时间、Token、重试和成本都花在了哪里。</strong>
 </p>
 
-TraceForge is a local-first CLI that turns OpenTelemetry traces into practical AI-agent
-diagnostics. Give it an OTLP/HTTP JSON export or newline-delimited spans; get a focused Rich
-terminal view, machine-readable JSON, or a polished standalone HTML report.
+TraceForge 是一个本地优先的命令行工具，可将 OpenTelemetry 轨迹转化为实用的
+AI Agent 诊断结果。输入 OTLP/HTTP JSON 导出或逐行 span 文件，即可得到聚焦的 Rich
+终端视图、机器可读 JSON，或精美的单文件 HTML 报告。
 
-No backend. No account. No telemetry upload.
+无需后端，无需账号，不上传遥测数据。
 
 ```console
 $ traceforge demo
 ╭──────────────────────────────────────────────────────────────╮
-│ TraceForge  agent trace intelligence                         │
+│ TraceForge  Agent 轨迹智能分析                               │
 ╰──────────────────────────────────────────────────────────────╯
- Traces       1                 Spans              6
- Tool calls   3                 Tool errors        1
- Tokens       2,370 in / 460 out Estimated cost    $0.0052625
- Retry loops  1                 Source             built-in demo
+轨迹       1                 Spans          6
+工具调用   3                 工具错误       1
+Token      2,370 输入 / 460 输出  估算成本  $0.0052625
+重试循环   1                 来源           内置演示
 
-Critical path  7f3a2c0917b3…  travel-assistant.run → plan itinerary
-  ✗ get_weather (TimeoutError, 300.0 ms): Weather provider exceeded the deadline
-  ↻ tool:get_weather 2 attempts, 300.0 ms before final attempt (recovered)
+关键路径  7f3a2c0917b3…  travel-assistant.run → 规划行程
+  ✗ get_weather (TimeoutError, 300.0 ms)：天气服务超过 250 ms 截止时间
+  ↻ tool:get_weather 共 2 次尝试，最终尝试前耗时 300.0 ms（已恢复）
 ```
 
-## Why TraceForge
+## 为什么选择 TraceForge
 
-General trace viewers show spans. TraceForge answers the questions that slow down agent teams:
+通用轨迹查看器展示 span；TraceForge 则直接回答拖慢 Agent 团队的问题：
 
-| Question | TraceForge signal |
+| 问题 | TraceForge 提供的信号 |
 |---|---|
-| Why was this run slow? | End-to-end latency plus an exclusive-time critical path |
-| Which integration is flaky? | Tool-call detection, error type/message, and failed duration |
-| Is the agent spinning? | Inferred retry loops, outcome, attempts, and time wasted |
-| Where did the context budget go? | Input/output tokens aggregated by trace and model |
-| What did this run cost? | Versionable, user-supplied per-model pricing rules |
-| Can I attach the result to an issue? | Portable JSON and one-file offline HTML reports |
+| 这次运行为什么慢？ | 端到端延迟，以及基于独占时间计算的关键路径 |
+| 哪个集成不稳定？ | 工具调用识别、错误类型与消息、失败耗时 |
+| Agent 是否陷入空转？ | 推断的重试循环、结果、尝试次数和无效耗时 |
+| 上下文预算花在了哪里？ | 按轨迹和模型汇总的输入、输出 Token |
+| 这次运行花了多少钱？ | 可版本化、由用户提供的模型价格规则 |
+| 结果能否附到 issue 中？ | 可移植 JSON 和单文件离线 HTML 报告 |
 
-## Quick start
+## 快速开始
 
-TraceForge requires Python 3.11 or newer.
+TraceForge 需要 Python 3.11 或更高版本。
 
 ```bash
 git clone https://github.com/abc123dx/traceforge-otel.git
@@ -64,7 +64,7 @@ traceforge analyze examples/demo-agent.otlp.json
 traceforge report examples/demo-agent.otlp.json --output report.html
 ```
 
-Analyze JSONL and save the complete result:
+分析 JSONL，并保存完整结果：
 
 ```bash
 traceforge analyze examples/support-agent.jsonl \
@@ -72,7 +72,7 @@ traceforge analyze examples/support-agent.jsonl \
   --output analysis.json
 ```
 
-Create both portable formats:
+同时生成两种便携格式：
 
 ```bash
 traceforge report trace.otlp.json \
@@ -81,74 +81,74 @@ traceforge report trace.otlp.json \
   --json-output trace-report.json
 ```
 
-## Commands
+## 命令
 
-| Command | Purpose |
+| 命令 | 用途 |
 |---|---|
-| `traceforge analyze TRACE` | Print findings and optionally write JSON |
-| `traceforge report TRACE` | Generate a self-contained offline HTML report |
-| `traceforge demo` | Run a built-in trace containing a recovered tool timeout |
+| `traceforge analyze TRACE` | 输出分析发现，并可选写入 JSON |
+| `traceforge report TRACE` | 生成自包含的离线 HTML 报告 |
+| `traceforge demo` | 运行一次包含工具超时后恢复的内置轨迹 |
 
-Run `traceforge COMMAND --help` for every option. Input format is inferred from the filename and
-content, or can be forced with `--format otlp|json|jsonl`.
+运行 `traceforge COMMAND --help` 可查看每个选项。输入格式会根据文件名与内容自动推断，
+也可通过 `--format otlp|json|jsonl` 强制指定。
 
-## Input compatibility
+## 输入兼容性
 
-TraceForge accepts:
+TraceForge 接受：
 
-- OTLP/HTTP JSON with `resourceSpans → scopeSpans → spans`
-- a JSON array of flattened spans
-- a JSON object with a top-level `spans` array
-- JSONL/NDJSON with one flattened or OTLP-wrapped span per line
-- camelCase OTLP keys and common snake_case exporter keys
-- integer nanosecond timestamps or ISO 8601 timestamps in flattened spans
+- 包含 `resourceSpans → scopeSpans → spans` 的 OTLP/HTTP JSON；
+- 扁平 span 的 JSON 数组；
+- 顶层含 `spans` 数组的 JSON 对象；
+- 每行一个扁平或 OTLP 包装 span 的 JSONL/NDJSON；
+- OTLP 驼峰键和常见导出器蛇形键；
+- 扁平 span 中的整数纳秒时间戳或 ISO 8601 时间戳。
 
-It understands current and widely deployed GenAI semantic-convention attributes, including:
+它识别当前及广泛部署的 GenAI 语义约定 attributes，包括：
 
-| Signal | Preferred attribute | Compatible aliases |
+| 信号 | 首选 attribute | 兼容别名 |
 |---|---|---|
-| Operation | `gen_ai.operation.name` | `otel.operation.name` |
-| Model | `gen_ai.response.model` | `gen_ai.request.model`, `llm.model_name` |
-| Input tokens | `gen_ai.usage.input_tokens` | `gen_ai.usage.prompt_tokens`, `llm.token_count.prompt` |
-| Output tokens | `gen_ai.usage.output_tokens` | `gen_ai.usage.completion_tokens`, `llm.token_count.completion` |
-| Tool | `gen_ai.tool.name` | `tool.name`, `tool_name` |
-| Errors | OTel `status=ERROR` | `error.type`, exception attributes/events |
+| 操作 | `gen_ai.operation.name` | `otel.operation.name` |
+| 模型 | `gen_ai.response.model` | `gen_ai.request.model`、`llm.model_name` |
+| 输入 Token | `gen_ai.usage.input_tokens` | `gen_ai.usage.prompt_tokens`、`llm.token_count.prompt` |
+| 输出 Token | `gen_ai.usage.output_tokens` | `gen_ai.usage.completion_tokens`、`llm.token_count.completion` |
+| 工具 | `gen_ai.tool.name` | `tool.name`、`tool_name` |
+| 错误 | OTel `status=ERROR` | `error.type`、exception attributes/events |
 
-Unknown attributes are preserved by the normalized parser, making it straightforward to extend
-the analysis without losing exporter-specific context.
+规范化解析器会保留未知 attributes，便于扩展分析，同时不丢失导出器特有的上下文。
 
-## How it works
+> 汉化只作用于文档和展示层。命令、flags、OTLP/OpenTelemetry 字段、span attribute 键、
+> JSON schema/keys 与状态值保持不变，现有自动化无需迁移。
+
+## 工作原理
 
 ```mermaid
 flowchart LR
-  A["OTLP JSON / JSONL"] --> B["Normalizer"]
-  B --> C["Trace graph"]
-  C --> D["Critical-path engine"]
-  C --> E["Tool & retry detector"]
-  C --> F["Token aggregator"]
-  F --> G["Cost rules"]
-  D --> H["Analysis model"]
+  A["OTLP JSON / JSONL"] --> B["规范化解析器"]
+  B --> C["轨迹图"]
+  C --> D["关键路径引擎"]
+  C --> E["工具与重试检测器"]
+  C --> F["Token 汇总器"]
+  F --> G["成本规则"]
+  D --> H["分析模型"]
   E --> H
   G --> H
-  H --> I["Rich terminal"]
-  H --> J["Stable JSON"]
-  H --> K["Self-contained HTML"]
+  H --> I["Rich 终端"]
+  H --> J["稳定 JSON"]
+  H --> K["自包含 HTML"]
 ```
 
-The critical-path engine computes each span's **exclusive time** by subtracting the union of its
-direct children's covered intervals. It then selects the root-to-leaf causal chain with the
-largest sum of exclusive work. This avoids double-counting nested spans while making the chosen
-chain explainable.
+关键路径引擎会从 span 的持续时间中减去直接子 span 覆盖区间的并集，计算每个 span 的
+**独占时间**；随后选择独占工作总量最大的根到叶因果链。这样既不会重复计算嵌套 span，
+又能清楚解释所选路径。
 
-Retry detection groups sibling operations by their parent and semantic signature. A group is
-reported when an earlier attempt failed or retry metadata is explicit. The report labels whether
-the final attempt recovered and counts the duration before that final attempt as wasted time.
-It is intentionally a transparent heuristic, not a claim about framework internals.
+重试检测会按父节点和语义特征对同级操作分组。当早期尝试失败或存在显式重试元数据时，
+该组会出现在报告中。报告会标记最后一次尝试是否恢复，并把最后一次尝试之前的耗时计为
+无效耗时。这是一种透明、可解释的启发式规则，并不假定底层框架的内部实现。
 
-## Bring your own pricing
+## 使用自己的价格表
 
-Provider prices change. TraceForge deliberately does not ship a silently aging global price
-table. Commit a dated pricing document alongside your service instead:
+供应商价格会变化，因此 TraceForge 不内置会悄然过期的全局价格表。建议把带日期的价格
+文档与服务代码一起版本化：
 
 ```json
 {
@@ -171,14 +171,14 @@ table. Commit a dated pricing document alongside your service instead:
 }
 ```
 
-Resolution order is exact model, longest matching prefix ending in `*`, then the `*` fallback.
-Models without a matching rule remain visibly unpriced; their tokens are never discarded.
+解析顺序依次为：精确模型、以 `*` 结尾的最长匹配前缀、`*` 兜底规则。没有匹配规则的
+模型会明确标记为“未定价”，其 Token 仍会保留。
 
-> The included example values are synthetic documentation data, not vendor pricing advice.
+> 仓库中的示例价格仅为合成文档数据，不构成任何供应商价格建议。
 
-## JSON output
+## JSON 输出
 
-The output starts with a schema version and separates global totals from trace-level detail:
+输出以 schema 版本开头，并将全局总计与轨迹级详情分开：
 
 ```json
 {
@@ -197,14 +197,14 @@ The output starts with a schema version and separates global totals from trace-l
 }
 ```
 
-Numbers in JSON remain numeric, so the result can feed CI policies, notebooks, or a dashboard.
+JSON 中的数字始终保持数字类型，可直接用于 CI 策略、Notebook 或仪表盘。
 
-## Use in CI
+## 在 CI 中使用
 
-Generate a review artifact after an integration test exports a trace:
+集成测试导出轨迹后，可以生成审查产物：
 
 ```yaml
-- name: Analyze agent trace
+- name: 分析 Agent 轨迹
   run: |
     traceforge report artifacts/agent-trace.json \
       --cost-model observability/pricing.json \
@@ -212,21 +212,10 @@ Generate a review artifact after an integration test exports a trace:
       --json-output artifacts/traceforge-report.json
 ```
 
-TraceForge currently reports findings without failing builds. Policy gates over its stable JSON
-are on the roadmap.
+TraceForge 当前只报告发现，不会使构建失败。基于稳定 JSON 的延迟、成本与可靠性策略门禁
+已列入路线图。
 
-## 中文快速说明
-
-TraceForge 是一个本地运行的 AI Agent 链路分析 CLI。它读取 OpenTelemetry 的 OTLP JSON
-或 JSONL span，自动汇总端到端延迟、关键路径、工具调用失败、Token 使用、重试循环和按自定义
-价格表估算的成本，并输出终端表格、JSON 或单文件 HTML 报告。所有原始 trace 都留在你的电脑上。
-
-```bash
-traceforge analyze examples/demo-agent.otlp.json
-traceforge report examples/demo-agent.otlp.json -o report.html
-```
-
-## Development
+## 开发
 
 ```bash
 python -m pip install -e ".[dev]"
@@ -236,16 +225,16 @@ mypy
 pytest
 ```
 
-The package uses a `src/` layout, strict mypy, Ruff, pytest, and a Python 3.11–3.13 CI matrix.
-See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+项目采用 `src/` 布局、strict mypy、Ruff 和 pytest，并支持 Python 3.11–3.13。
+提交 Pull Request 前请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
-## Roadmap
+## 路线图
 
-- Trace comparison and regression budgets
-- Framework-aware loop classifiers
-- Optional redaction rules for report fields
-- Policy exits for latency, cost, and reliability thresholds
-- Native OTLP protobuf ingestion
+- 轨迹对比与回归预算；
+- 面向框架的循环分类器；
+- 可选的报告字段脱敏规则；
+- 针对延迟、成本和可靠性阈值的策略退出码；
+- 原生 OTLP protobuf 输入。
 
-Security issues should follow [SECURITY.md](SECURITY.md). TraceForge is available under the
-[MIT License](LICENSE).
+安全问题请按 [SECURITY.md](SECURITY.md) 说明处理。TraceForge 基于
+[MIT License](LICENSE) 开源。

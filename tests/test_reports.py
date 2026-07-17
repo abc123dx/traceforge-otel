@@ -36,6 +36,8 @@ def test_html_report_is_self_contained() -> None:
     assert html.startswith("<!doctype html>")
     assert "TraceForge" in html
     assert "get_weather" in html
+    assert '<html lang="zh-CN">' in html
+    assert "关键路径" in html
     assert "<script src=" not in html
     assert "<link rel=" not in html
 

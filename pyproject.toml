@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "traceforge-otel"
-version = "0.1.0"
-description = "A local-first CLI for turning OpenTelemetry AI-agent traces into actionable performance, reliability, and cost insights."
+version = "0.1.1"
+description = "中文 Local-first OpenTelemetry Agent 轨迹诊断 CLI：分析延迟、关键路径、工具错误、重试、Token 与成本。"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
@@ -73,6 +73,7 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+allowed-confusables = ["，", "。", "：", "；", "！", "？", "（", "）", "、"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101"]

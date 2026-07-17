@@ -30,7 +30,7 @@
               "traceId": "7f3a2c0917b34f5aa891cd79e6f92410",
               "spanId": "0000000000000002",
               "parentSpanId": "0000000000000001",
-              "name": "plan itinerary",
+              "name": "规划行程",
               "kind": "SPAN_KIND_INTERNAL",
               "startTimeUnixNano": "1735689600100000000",
               "endTimeUnixNano": "1735689600800000000",
@@ -60,10 +60,10 @@
                 {"key": "error.type", "value": {"stringValue": "upstream_timeout"}},
                 {
                   "key": "error.message",
-                  "value": {"stringValue": "Weather provider exceeded the 250 ms deadline"}
+                  "value": {"stringValue": "天气服务超过 250 ms 截止时间"}
                 }
               ],
-              "status": {"code": "STATUS_CODE_ERROR", "message": "upstream timeout"},
+              "status": {"code": "STATUS_CODE_ERROR", "message": "上游超时"},
               "events": [
                 {
                   "name": "exception",
@@ -72,7 +72,7 @@
                     {"key": "exception.type", "value": {"stringValue": "TimeoutError"}},
                     {
                       "key": "exception.message",
-                      "value": {"stringValue": "Weather provider exceeded the 250 ms deadline"}
+                      "value": {"stringValue": "天气服务超过 250 ms 截止时间"}
                     }
                   ]
                 }
@@ -115,7 +115,7 @@
               "traceId": "7f3a2c0917b34f5aa891cd79e6f92410",
               "spanId": "0000000000000006",
               "parentSpanId": "0000000000000001",
-              "name": "compose answer",
+              "name": "生成答复",
               "kind": "SPAN_KIND_INTERNAL",
               "startTimeUnixNano": "1735689602000000000",
               "endTimeUnixNano": "1735689602650000000",

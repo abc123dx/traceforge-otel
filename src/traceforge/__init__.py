@@ -1,4 +1,4 @@
-"""TraceForge public package API."""
+"""TraceForge 公共 Python API。"""
 
 from traceforge.analyzer import analyze_spans
 from traceforge.costs import CostModel
@@ -14,4 +14,4 @@ __all__ = [
     "parse_payload",
 ]
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
