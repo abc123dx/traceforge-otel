@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      python-tooling:
+        patterns: ["pytest", "ruff", "mypy", "hatchling"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

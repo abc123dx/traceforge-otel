@@ -1,0 +1,24 @@
+name: Feature request
+description: Propose an analysis, format, or workflow improvement
+title: "feature: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Agent observability problem
+      description: What question can you not answer from your traces today?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Available trace evidence
+      description: Which span relationships or semantic attributes could support the finding?
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Desired output
+      description: How should this appear in terminal, JSON, or HTML?
